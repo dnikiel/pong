@@ -1,6 +1,11 @@
 -- Pong game made with lua and love2d.
 
+-- https://github.com/Ulydev/push
 push = require 'push'
+-- https://github.com/vrld/hump/blob/master/class.lua
+Class = require 'class'
+
+require 'Paddle'
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
@@ -44,6 +49,9 @@ function love.load()
   ballDX = math.random(2) == 1 and 100 or -100
   ballDY = math.random(-50, 50)
 
+  player1Paddle = Paddle(10, player1Y)
+  player2Paddle = Paddle(VIRTUAL_WIDTH - 15, player2Y)
+
   gameState = GAME_STATE.start
 
   love.graphics.setFont(retroFont)
@@ -80,21 +88,21 @@ end
 -- On update passing delta time (seconds since the last frame).
 function love.update(dt)
   -- Player 1 movement
-  if love.keyboard.isDown('s') and player1Y < VIRTUAL_HEIGHT - 50 then
-    player1Y = player1Y + PADDLE_SPEED * dt
+  if love.keyboard.isDown('s') then
+    player1Paddle:moveDown(dt)
   end
 
-  if love.keyboard.isDown('w') and player1Y > 30 then
-    player1Y = player1Y + -PADDLE_SPEED * dt
+  if love.keyboard.isDown('w') then
+    player1Paddle:moveUp(dt)
   end
 
   -- Player 2 movement
-  if love.keyboard.isDown('down') and player2Y < VIRTUAL_HEIGHT - 50 then
-    player2Y = player2Y + PADDLE_SPEED * dt
+  if love.keyboard.isDown('down') then
+    player2Paddle:moveDown(dt)
   end
 
-  if love.keyboard.isDown('up') and player2Y > 30 then
-    player2Y = player2Y + -PADDLE_SPEED * dt
+  if love.keyboard.isDown('up') then
+    player2Paddle:moveUp(dt)
   end
 
   -- scale the velocity by dt so movement is framerate-independent
@@ -111,10 +119,10 @@ function love.draw()
   love.graphics.printf('Hello Pong!', 0, 20, VIRTUAL_WIDTH, 'center')
 
   -- Draw first paddle (left side)
-  love.graphics.rectangle('fill', 10, player1Y, PADDLE_WIDTH, PADDLE_HEIGHT)
+  player1Paddle:render()
 
   -- Draw second paddle (right side)
-  love.graphics.rectangle('fill', VIRTUAL_WIDTH - 15, player2Y, PADDLE_WIDTH, PADDLE_HEIGHT)
+  player2Paddle:render()
 
   -- Draw ball (center)
   love.graphics.rectangle('fill', ballX, ballY, 4, 4)
