@@ -1,5 +1,9 @@
 Paddle = Class{}
 
+PADDLE_WIDTH = 5
+PADDLE_HEIGHT = 20
+PADDLE_SPEED = 200
+
 function Paddle:init(x, y)
   self.x = x
   self.y = y

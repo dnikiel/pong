@@ -6,16 +6,13 @@ push = require 'push'
 Class = require 'class'
 
 require 'Paddle'
+require 'Ball'
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
 
 VIRTUAL_WIDTH = 432
 VIRTUAL_HEIGHT = 243
-
-PADDLE_WIDTH = 5
-PADDLE_HEIGHT = 20
-PADDLE_SPEED = 200
 
 GAME_STATE = {
   start = 'start',
@@ -31,6 +28,8 @@ function love.load()
   --   vsync = true
   -- })
 
+  love.window.setTitle('Pong')
+
   love.graphics.setDefaultFilter('nearest', 'nearest')
 
   -- More "retro-looking" font object
@@ -45,12 +44,10 @@ function love.load()
   ballX = VIRTUAL_WIDTH / 2 - 2
   ballY = VIRTUAL_HEIGHT / 2 - 2
 
-  -- Ball starting destination
-  ballDX = math.random(2) == 1 and 100 or -100
-  ballDY = math.random(-50, 50)
-
   player1Paddle = Paddle(10, player1Y)
   player2Paddle = Paddle(VIRTUAL_WIDTH - 15, player2Y)
+
+  ball = Ball(ballX, ballY)
 
   gameState = GAME_STATE.start
 
@@ -74,13 +71,7 @@ function love.keypressed(key)
     else
       gameState = GAME_STATE.start
 
-      -- start ball's position in the middle of the screen
-      ballX = VIRTUAL_WIDTH / 2 - 2
-      ballY = VIRTUAL_HEIGHT / 2 - 2
-
-      -- reset starting destination
-      ballDX = math.random(2) == 1 and 100 or -100
-      ballDY = math.random(-50, 50)
+      ball:reset()
     end
   end
 end
@@ -105,15 +96,19 @@ function love.update(dt)
     player2Paddle:moveUp(dt)
   end
 
-  -- scale the velocity by dt so movement is framerate-independent
   if gameState == 'play' then
-    ballX = ballX + ballDX * dt
-    ballY = ballY + ballDY * dt
+    ball:move(dt)
   end
+end
+
+function renderFps()
+  love.graphics.print("FPS: "..tostring(love.timer.getFPS( )), 10, 10)
 end
 
 function love.draw()
   push:start()
+
+  renderFps()
 
   -- Draw welcome text
   love.graphics.printf('Hello Pong!', 0, 20, VIRTUAL_WIDTH, 'center')
@@ -125,7 +120,7 @@ function love.draw()
   player2Paddle:render()
 
   -- Draw ball (center)
-  love.graphics.rectangle('fill', ballX, ballY, 4, 4)
+  ball:render()
 
   push:finish()
 end
