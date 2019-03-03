@@ -14,6 +14,9 @@ WINDOW_HEIGHT = 720
 VIRTUAL_WIDTH = 432
 VIRTUAL_HEIGHT = 243
 
+BOARD_BORDER_TOP = 30
+BORDER_LEFT_RIGHT = 10
+
 GAME_STATE = {
   start = 'start',
   play = 'play'
@@ -38,14 +41,14 @@ function love.load()
   -- Seed RNG for ball
   math.randomseed(os.time())
 
-  player1Y = 30
-  player2Y = VIRTUAL_HEIGHT - 50
+  player1Y = BOARD_BORDER_TOP
+  player2Y = VIRTUAL_HEIGHT - PADDLE_HEIGHT
 
   ballX = VIRTUAL_WIDTH / 2 - 2
   ballY = VIRTUAL_HEIGHT / 2 - 2
 
-  player1Paddle = Paddle(10, player1Y)
-  player2Paddle = Paddle(VIRTUAL_WIDTH - 15, player2Y)
+  player1Paddle = Paddle(BORDER_LEFT_RIGHT, player1Y)
+  player2Paddle = Paddle(VIRTUAL_WIDTH - BORDER_LEFT_RIGHT - PADDLE_WIDTH, player2Y)
 
   ball = Ball(ballX, ballY)
 
@@ -76,7 +79,7 @@ function love.keypressed(key)
   end
 end
 
--- On update passing delta time (seconds since the last frame).
+-- On update passing delta time (seconds since the last frame)
 function love.update(dt)
   -- Player 1 movement
   if love.keyboard.isDown('s') then
@@ -98,9 +101,31 @@ function love.update(dt)
 
   if gameState == 'play' then
     ball:move(dt)
+
+    -- Handle paddle collision
+    if ball:isColliding(player1Paddle) then
+      ball:bounce()
+    end
+
+    if ball:isColliding(player2Paddle) then
+      ball:bounce()
+    end
+
+    -- Handle collision with top border
+    if ball.y <= player1Y then
+      ball.y = player1Y
+      ball.dy = -ball.dy
+    end
+
+    -- Handle collision with bottom border
+    if ball.y >= VIRTUAL_HEIGHT - BALL_HEIGHT then
+      ball.y = VIRTUAL_HEIGHT - BALL_HEIGHT
+      ball.dy = -ball.dy
+    end
   end
 end
 
+-- Render FPS counter
 function renderFps()
   love.graphics.print("FPS: "..tostring(love.timer.getFPS( )), 10, 10)
 end
@@ -108,6 +133,7 @@ end
 function love.draw()
   push:start()
 
+  -- Draw FPS counter
   renderFps()
 
   -- Draw welcome text
