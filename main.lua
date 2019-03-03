@@ -54,6 +54,11 @@ function love.load()
 
   gameState = GAME_STATE.start
 
+  score = {
+    player1 = 0,
+    player2 = 0
+  }
+
   love.graphics.setFont(retroFont)
 
   push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
@@ -122,12 +127,36 @@ function love.update(dt)
       ball.y = VIRTUAL_HEIGHT - BALL_HEIGHT
       ball.dy = -ball.dy
     end
+
+    -- Handle score
+    if ball.x < 0 then
+      score.player2 = score.player2 + 1
+      gameState = GAME_STATE.start
+
+      ball:reset()
+    elseif ball.x > VIRTUAL_WIDTH then
+      score.player1 = score.player1 + 1
+      gameState = GAME_STATE.start
+
+      ball:reset()
+    end
   end
 end
 
 -- Render FPS counter
 function renderFps()
-  love.graphics.print("FPS: "..tostring(love.timer.getFPS( )), 10, 10)
+  love.graphics.print('FPS: '..tostring(love.timer.getFPS( )), 10, 10)
+end
+
+-- Render game score
+function renderScore()
+  love.graphics.printf(
+    'Score: '..tostring(score.player1)..':'..tostring(score.player2),
+    0,
+    10,
+    VIRTUAL_WIDTH - BORDER_LEFT_RIGHT,
+    'right'
+  )
 end
 
 function love.draw()
@@ -135,6 +164,9 @@ function love.draw()
 
   -- Draw FPS counter
   renderFps()
+
+  -- Draw game score
+  renderScore()
 
   -- Draw welcome text
   love.graphics.printf('Hello Pong!', 0, 20, VIRTUAL_WIDTH, 'center')
