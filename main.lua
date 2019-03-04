@@ -38,6 +38,13 @@ function love.load()
   -- More "retro-looking" font object
   retroFont = love.graphics.newFont('font.ttf', 8)
 
+  -- Load audio fx
+  sound = {
+    bounce = love.audio.newSource('sounds/Blip.wav', 'static'),
+    bounceBorder = love.audio.newSource('sounds/Blip2.wav', 'static'),
+    score = love.audio.newSource('sounds/Score.wav', 'static')
+  }
+
   -- Seed RNG for ball
   math.randomseed(os.time())
 
@@ -110,22 +117,28 @@ function love.update(dt)
     -- Handle paddle collision
     if ball:isColliding(player1Paddle) then
       ball:bounce()
+      sound.bounce:play()
     end
 
     if ball:isColliding(player2Paddle) then
       ball:bounce()
+      sound.bounce:play()
     end
 
     -- Handle collision with top border
     if ball.y <= player1Y then
       ball.y = player1Y
       ball.dy = -ball.dy
+
+      sound.bounceBorder:play()
     end
 
     -- Handle collision with bottom border
     if ball.y >= VIRTUAL_HEIGHT - BALL_HEIGHT then
       ball.y = VIRTUAL_HEIGHT - BALL_HEIGHT
       ball.dy = -ball.dy
+
+      sound.bounceBorder:play()
     end
 
     -- Handle score
@@ -134,11 +147,13 @@ function love.update(dt)
       gameState = GAME_STATE.start
 
       ball:reset()
+      sound.score:play()
     elseif ball.x > VIRTUAL_WIDTH then
       score.player1 = score.player1 + 1
       gameState = GAME_STATE.start
 
       ball:reset()
+      sound.score:play()
     end
   end
 end
