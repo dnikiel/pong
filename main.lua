@@ -51,8 +51,8 @@ function love.load()
   player1Y = BOARD_BORDER_TOP
   player2Y = VIRTUAL_HEIGHT - PADDLE_HEIGHT
 
-  ballX = VIRTUAL_WIDTH / 2 - 2
-  ballY = VIRTUAL_HEIGHT / 2 - 2
+  local ballX = VIRTUAL_WIDTH / 2 - 2
+  local ballY = VIRTUAL_HEIGHT / 2 - 2
 
   player1Paddle = Paddle(BORDER_LEFT_RIGHT, player1Y)
   player2Paddle = Paddle(VIRTUAL_WIDTH - BORDER_LEFT_RIGHT - PADDLE_WIDTH, player2Y)
@@ -73,6 +73,11 @@ function love.load()
     resizable = false,
     vsync = true
   })
+
+  -- Configure joysticks
+  local joysticks = love.joystick.getJoysticks()
+  
+  gamepad = joysticks[1]
 end
 
 function love.keypressed(key)
@@ -94,11 +99,11 @@ end
 -- On update passing delta time (seconds since the last frame)
 function love.update(dt)
   -- Player 1 movement
-  if love.keyboard.isDown('s') then
+  if love.keyboard.isDown('s') or gamepad:getGamepadAxis("lefty") > 0.5 then
     player1Paddle:moveDown(dt)
   end
 
-  if love.keyboard.isDown('w') then
+  if love.keyboard.isDown('w') or gamepad:getGamepadAxis("lefty") < -0.5 then
     player1Paddle:moveUp(dt)
   end
 
