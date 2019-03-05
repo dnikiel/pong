@@ -74,10 +74,13 @@ function love.load()
     vsync = true
   })
 
-  -- Configure joysticks
-  local joysticks = love.joystick.getJoysticks()
-  
-  gamepad = joysticks[1]
+  -- Initialize joystick
+  player1Joystick = nil
+end
+
+-- Set connected joystick
+function love.joystickadded(joystick)
+  player1Joystick = joystick
 end
 
 function love.keypressed(key)
@@ -99,12 +102,22 @@ end
 -- On update passing delta time (seconds since the last frame)
 function love.update(dt)
   -- Player 1 movement
-  if love.keyboard.isDown('s') or gamepad:getGamepadAxis("lefty") > 0.5 then
+  if love.keyboard.isDown('s') then
     player1Paddle:moveDown(dt)
   end
 
-  if love.keyboard.isDown('w') or gamepad:getGamepadAxis("lefty") < -0.5 then
+  if love.keyboard.isDown('w') then
     player1Paddle:moveUp(dt)
+  end
+
+  if player1Joystick then
+    if player1Joystick:getGamepadAxis("lefty") > 0.5 then
+      player1Paddle:moveDown(dt)
+    end
+
+    if player1Joystick:getGamepadAxis("lefty") < -0.5 then
+      player1Paddle:moveUp(dt)
+    end
   end
 
   -- Player 2 movement
