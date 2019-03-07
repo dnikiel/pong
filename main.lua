@@ -213,5 +213,9 @@ function love.draw()
   -- Draw ball (center)
   ball:render()
 
+    -- Draw outline
+  -- maybe needs to be improved
+  love.graphics.line(1,BOARD_BORDER_TOP,   VIRTUAL_WIDTH-1, BOARD_BORDER_TOP,    VIRTUAL_WIDTH-1, VIRTUAL_HEIGHT-1,    1, VIRTUAL_HEIGHT-1,   1, BOARD_BORDER_TOP)
+
   push:finish()
 end
