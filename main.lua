@@ -51,8 +51,8 @@ function love.load()
   player1Y = BOARD_BORDER_TOP
   player2Y = VIRTUAL_HEIGHT - PADDLE_HEIGHT
 
-  local ballX = VIRTUAL_WIDTH / 2 - 2
-  local ballY = VIRTUAL_HEIGHT / 2 - 2
+  local ballX = VIRTUAL_WIDTH / 2 - BALL_WIDTH / 2
+  local ballY = VIRTUAL_HEIGHT / 2 - BALL_HEIGHT / 2
 
   player1Paddle = Paddle(BORDER_LEFT_RIGHT, player1Y)
   player2Paddle = Paddle(VIRTUAL_WIDTH - BORDER_LEFT_RIGHT - PADDLE_WIDTH, player2Y)
