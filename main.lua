@@ -197,12 +197,7 @@ function renderOutline()
   love.graphics.line(1,BOARD_BORDER_TOP,   VIRTUAL_WIDTH-1, BOARD_BORDER_TOP,    VIRTUAL_WIDTH-1, VIRTUAL_HEIGHT-1,    1, VIRTUAL_HEIGHT-1,   1, BOARD_BORDER_TOP)
 end
 
-function love.draw()
-  push:start()
-
-  -- Draw FPS counter
-  renderFps()
-
+function renderMatch()
   -- Draw game score
   renderScore()
 
@@ -220,6 +215,16 @@ function love.draw()
 
   -- Draw outline
   renderOutline()
-  
+end
+
+function love.draw()
+  push:start()
+
+  -- Draw FPS counter
+  renderFps()
+
+  -- Render Match (paddles, ball, field, outline)
+  renderMatch()
+
   push:finish()
 end
