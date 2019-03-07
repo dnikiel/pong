@@ -181,6 +181,12 @@ function renderFps()
   love.graphics.print('FPS: '..tostring(love.timer.getFPS( )), 10, 10)
 end
 
+-- Render Welcome Screen
+function renderWelcomeScreen()
+  love.graphics.printf('Hello Pong!', 0, VIRTUAL_HEIGHT/2 - VIRTUAL_HEIGHT * 0.05, VIRTUAL_WIDTH, 'center')
+  love.graphics.printf('PRESS ENTER TO START', 0, VIRTUAL_HEIGHT/2 + VIRTUAL_HEIGHT * 0.02, VIRTUAL_WIDTH, 'center')  
+end
+
 -- Render game score
 function renderScore()
   love.graphics.printf(
@@ -223,7 +229,11 @@ function love.draw()
   -- Draw FPS counter
   renderFps()
 
+  -- Render Welcome Screen
+  renderWelcomeScreen()
+
   -- Render Match (paddles, ball, field, outline)
+  -- I need to call renderMatch as a consequence of pressing enter on start screen
   renderMatch()
 
   push:finish()
