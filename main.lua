@@ -192,6 +192,11 @@ function renderScore()
   )
 end
 
+-- maybe needs to be improved
+function renderOutline()
+  love.graphics.line(1,BOARD_BORDER_TOP,   VIRTUAL_WIDTH-1, BOARD_BORDER_TOP,    VIRTUAL_WIDTH-1, VIRTUAL_HEIGHT-1,    1, VIRTUAL_HEIGHT-1,   1, BOARD_BORDER_TOP)
+end
+
 function love.draw()
   push:start()
 
@@ -213,9 +218,8 @@ function love.draw()
   -- Draw ball (center)
   ball:render()
 
-    -- Draw outline
-  -- maybe needs to be improved
-  love.graphics.line(1,BOARD_BORDER_TOP,   VIRTUAL_WIDTH-1, BOARD_BORDER_TOP,    VIRTUAL_WIDTH-1, VIRTUAL_HEIGHT-1,    1, VIRTUAL_HEIGHT-1,   1, BOARD_BORDER_TOP)
-
+  -- Draw outline
+  renderOutline()
+  
   push:finish()
 end
