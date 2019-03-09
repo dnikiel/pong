@@ -202,13 +202,13 @@ end
 function renderFieldOutline()
   -- Field Outline
   love.graphics.setLineStyle('rough')
-  love.graphics.setLineWidth( 2 )
-  love.graphics.line(1,BOARD_BORDER_TOP,   VIRTUAL_WIDTH -1, BOARD_BORDER_TOP,    VIRTUAL_WIDTH -1 , VIRTUAL_HEIGHT -1,    1, VIRTUAL_HEIGHT-1,   1, BOARD_BORDER_TOP)
+  love.graphics.setLineWidth(2)
+  love.graphics.line(1,BOARD_BORDER_TOP, VIRTUAL_WIDTH -1, BOARD_BORDER_TOP, VIRTUAL_WIDTH -1, VIRTUAL_HEIGHT -1, 1, VIRTUAL_HEIGHT-1, 1, BOARD_BORDER_TOP)
   
   -- Center line of the field
   love.graphics.setLineStyle('smooth')
-  love.graphics.setLineWidth( 1 )
-  love.graphics.line(0.5 * VIRTUAL_WIDTH, BOARD_BORDER_TOP,   0.5 * VIRTUAL_WIDTH, VIRTUAL_HEIGHT)
+  love.graphics.setLineWidth(1)
+  love.graphics.line(0.5 * VIRTUAL_WIDTH, BOARD_BORDER_TOP, 0.5 * VIRTUAL_WIDTH, VIRTUAL_HEIGHT)
 end
 
 function renderMatch()
