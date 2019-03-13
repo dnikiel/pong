@@ -15,6 +15,9 @@ function Ball:init(x, y)
   -- Ball size
   self.width = BALL_WIDTH
   self.height = BALL_HEIGHT
+
+  -- Ball color
+  self.color = {r = 168, g = 218, b = 220}
 end
 
 function Ball:move(dt)
@@ -56,5 +59,6 @@ function Ball:isColliding(paddle)
 end
 
 function Ball:render()
+  love.graphics.setColor(self.color.r / 255, self.color.g / 255, self.color.b / 255)
   love.graphics.rectangle('fill', self.x, self.y, self.width, self.height)
 end

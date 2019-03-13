@@ -4,6 +4,8 @@
 push = require 'push'
 -- https://github.com/vrld/hump/blob/master/class.lua
 Class = require 'class'
+-- https://love2d.org/wiki/LineStippleSnippet
+require 'dottedLine'
 
 require 'Paddle'
 require 'Ball'
@@ -31,7 +33,7 @@ function love.load()
   --   vsync = true
   -- })
 
-  love.window.setTitle('Pong')
+  love.window.setTitle('Pong Party')
 
   love.graphics.setDefaultFilter('nearest', 'nearest')
 
@@ -48,14 +50,18 @@ function love.load()
   -- Seed RNG for ball
   math.randomseed(os.time())
 
-  player1Y = BOARD_BORDER_TOP
-  player2Y = VIRTUAL_HEIGHT - PADDLE_HEIGHT
+  player1Y = BOARD_BORDER_TOP + 1
+  player2Y = VIRTUAL_HEIGHT - PADDLE_HEIGHT - 2
 
   local ballX = VIRTUAL_WIDTH / 2 - BALL_WIDTH / 2
   local ballY = VIRTUAL_HEIGHT / 2 - BALL_HEIGHT / 2
 
-  player1Paddle = Paddle(BORDER_LEFT_RIGHT, player1Y)
-  player2Paddle = Paddle(VIRTUAL_WIDTH - BORDER_LEFT_RIGHT - PADDLE_WIDTH, player2Y)
+  player1Paddle = Paddle(BORDER_LEFT_RIGHT, player1Y, {r = 230, g = 57, b = 70})
+  player2Paddle = Paddle(
+    VIRTUAL_WIDTH - BORDER_LEFT_RIGHT - PADDLE_WIDTH,
+    player2Y,
+    {r = 69, g = 123, b = 157}
+  )
 
   ball = Ball(ballX, ballY)
 
@@ -178,17 +184,20 @@ end
 
 -- Render FPS counter
 function renderFps()
-  love.graphics.print('FPS: '..tostring(love.timer.getFPS( )), 10, 10)
+  love.graphics.print('FPS: '..tostring(love.timer.getFPS( )), BORDER_LEFT_RIGHT, 10)
 end
 
 -- Render Welcome Screen
 function renderWelcomeScreen()
-  love.graphics.printf('Hello Pong!', 0, VIRTUAL_HEIGHT/2 - VIRTUAL_HEIGHT * 0.05, VIRTUAL_WIDTH, 'center')
-  love.graphics.printf('PRESS ENTER TO START', 0, VIRTUAL_HEIGHT/2 + VIRTUAL_HEIGHT * 0.02, VIRTUAL_WIDTH, 'center')  
+  if gameState == GAME_STATE.start then
+    love.graphics.setColor(241/255, 250/255, 238/255)
+    love.graphics.printf('PRESS ENTER TO START', 0, VIRTUAL_HEIGHT / 2 + 10, VIRTUAL_WIDTH, 'center')
+  end
 end
 
 -- Render game score
 function renderScore()
+  love.graphics.setColor(241/255, 250/255, 238/255)
   love.graphics.printf(
     'Score: '..tostring(score.player1)..':'..tostring(score.player2),
     0,
@@ -200,23 +209,36 @@ end
 
 -- Render field lines
 function renderFieldOutline()
+  love.graphics.setColor(241/255, 250/255, 238/255)
+  
   -- Field Outline
-  love.graphics.setLineStyle('rough')
   love.graphics.setLineWidth(2)
-  love.graphics.line(1,BOARD_BORDER_TOP, VIRTUAL_WIDTH -1, BOARD_BORDER_TOP, VIRTUAL_WIDTH -1, VIRTUAL_HEIGHT -1, 1, VIRTUAL_HEIGHT-1, 1, BOARD_BORDER_TOP)
+  love.graphics.line(
+    1,
+    BOARD_BORDER_TOP,
+    VIRTUAL_WIDTH - 1,
+    BOARD_BORDER_TOP,
+    VIRTUAL_WIDTH - 1,
+    VIRTUAL_HEIGHT - 1,
+    1,
+    VIRTUAL_HEIGHT - 1,
+    1,
+    BOARD_BORDER_TOP
+  )
   
   -- Center line of the field
-  love.graphics.setLineStyle('smooth')
-  love.graphics.setLineWidth(1)
-  love.graphics.line(0.5 * VIRTUAL_WIDTH, BOARD_BORDER_TOP, 0.5 * VIRTUAL_WIDTH, VIRTUAL_HEIGHT)
+  dottedLine(0.5 * VIRTUAL_WIDTH, BOARD_BORDER_TOP, 0.5 * VIRTUAL_WIDTH, VIRTUAL_HEIGHT, 5, 3)
 end
 
 function renderMatch()
   -- Draw game score
   renderScore()
 
+  -- Draw outline
+  renderFieldOutline()
+
   -- Draw welcome text
-  love.graphics.printf('Hello Pong!', 0, 20, VIRTUAL_WIDTH, 'center')
+  love.graphics.printf('Pong Party!', 0, 10, VIRTUAL_WIDTH, 'center')
 
   -- Draw first paddle (left side)
   player1Paddle:render()
@@ -226,23 +248,22 @@ function renderMatch()
 
   -- Draw ball (center)
   ball:render()
-
-  -- Draw outline
-  renderFieldOutline()
 end
 
 function love.draw()
+  love.graphics.setBackgroundColor(29/255, 53/255, 87/255)
+  love.graphics.clear(love.graphics.getBackgroundColor())
+
   push:start()
 
   -- Draw FPS counter
   renderFps()
 
+  -- Render Match (paddles, ball, field, outline)
+  renderMatch()
+
   -- Render Welcome Screen
   renderWelcomeScreen()
-
-  -- Render Match (paddles, ball, field, outline)
-  -- I need to call renderMatch as a consequence of pressing enter on start screen
-  renderMatch()
 
   push:finish()
 end
