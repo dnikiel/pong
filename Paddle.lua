@@ -14,7 +14,7 @@ function Paddle:init(x, y, color)
   self.height = PADDLE_HEIGHT
 
   -- Paddle color
-  self.color = color or {r = 1, g = 1, b = 1}
+  self.color = color or getColor('red')
 end
 
 function Paddle:moveDown(dt)
@@ -36,6 +36,6 @@ function Paddle:moveUp(dt)
 end
 
 function Paddle:render()
-  love.graphics.setColor(self.color.r / 255, self.color.g / 255, self.color.b / 255)
+  love.graphics.setColor(self.color)
   love.graphics.rectangle('fill', self.x, self.y, self.width, self.height)
 end

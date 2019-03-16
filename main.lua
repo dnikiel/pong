@@ -6,6 +6,7 @@ push = require 'push'
 Class = require 'class'
 -- https://love2d.org/wiki/LineStippleSnippet
 require 'dottedLine'
+require 'color'
 
 require 'Paddle'
 require 'Ball'
@@ -56,11 +57,11 @@ function love.load()
   local ballX = VIRTUAL_WIDTH / 2 - BALL_WIDTH / 2
   local ballY = VIRTUAL_HEIGHT / 2 - BALL_HEIGHT / 2
 
-  player1Paddle = Paddle(BORDER_LEFT_RIGHT, player1Y, {r = 230, g = 57, b = 70})
+  player1Paddle = Paddle(BORDER_LEFT_RIGHT, player1Y, getColor('red'))
   player2Paddle = Paddle(
     VIRTUAL_WIDTH - BORDER_LEFT_RIGHT - PADDLE_WIDTH,
     player2Y,
-    {r = 69, g = 123, b = 157}
+    getColor('lightBlue')
   )
 
   ball = Ball(ballX, ballY)
@@ -190,14 +191,14 @@ end
 -- Render Welcome Screen
 function renderWelcomeScreen()
   if gameState == GAME_STATE.start then
-    love.graphics.setColor(241/255, 250/255, 238/255)
+    love.graphics.setColor(getColor('white'))
     love.graphics.printf('PRESS ENTER TO START', 0, VIRTUAL_HEIGHT / 2 + 10, VIRTUAL_WIDTH, 'center')
   end
 end
 
 -- Render game score
 function renderScore()
-  love.graphics.setColor(241/255, 250/255, 238/255)
+  love.graphics.setColor(getColor('white'))
   love.graphics.printf(
     'Score: '..tostring(score.player1)..':'..tostring(score.player2),
     0,
@@ -209,8 +210,8 @@ end
 
 -- Render field lines
 function renderFieldOutline()
-  love.graphics.setColor(241/255, 250/255, 238/255)
-  
+  love.graphics.setColor(getColor('white'))
+
   -- Field Outline
   love.graphics.setLineWidth(2)
   love.graphics.line(
@@ -225,7 +226,7 @@ function renderFieldOutline()
     1,
     BOARD_BORDER_TOP
   )
-  
+
   -- Center line of the field
   dottedLine(0.5 * VIRTUAL_WIDTH, BOARD_BORDER_TOP, 0.5 * VIRTUAL_WIDTH, VIRTUAL_HEIGHT, 5, 3)
 end
@@ -251,7 +252,7 @@ function renderMatch()
 end
 
 function love.draw()
-  love.graphics.setBackgroundColor(29/255, 53/255, 87/255)
+  love.graphics.setBackgroundColor(getColor('darkBlue'))
   love.graphics.clear(love.graphics.getBackgroundColor())
 
   push:start()
