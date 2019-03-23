@@ -3,6 +3,8 @@ Ball = Class{}
 BALL_WIDTH = 4
 BALL_HEIGHT = 4
 
+BALL_POSSESION = 'neutral'
+
 function Ball:init(x, y)
   -- Ball position
   self.x = x
