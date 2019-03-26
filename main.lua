@@ -267,7 +267,7 @@ function logBallOwnership()
   love.graphics.printf('Ball ownership: ' ..BALL_POSSESION, 10, BORDER_LEFT_RIGHT + 10, 300)
 end
 
-function logballPosition()
+function logBallPosition()
   love.graphics.setColor(getColor('white'))
   love.graphics.printf('Ball position X: ' ..ball.x, 10, BORDER_LEFT_RIGHT + 20, 300)
   love.graphics.printf('Ball position Y: ' ..ball.y, 10, BORDER_LEFT_RIGHT + 30, 300)
@@ -279,7 +279,7 @@ end
 function renderConsole()
   if CONSOLE == true then
   logBallOwnership()
-  logballPosition()
+  logBallPosition()
   end
 end
 
