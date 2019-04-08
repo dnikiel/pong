@@ -10,6 +10,7 @@ require 'color'
 
 require 'Paddle'
 require 'Ball'
+require 'Console'
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
@@ -24,8 +25,6 @@ GAME_STATE = {
   start = 'start',
   play = 'play'
 }
-
-CONSOLE = false
 
 function love.load()
   -- This is replaced with push:setupScreen
@@ -92,7 +91,10 @@ function love.joystickadded(joystick)
   player1Joystick = joystick
 end
 
+-- Key pressing handler
 function love.keypressed(key)
+  Console:consoleDisplay(key) 
+
   if key == 'escape' then
     love.event.quit()
   end
@@ -102,33 +104,21 @@ function love.keypressed(key)
       gameState = GAME_STATE.play
     else
       gameState = GAME_STATE.start
-
       ball:reset()
     end
   end
-
-  if key == 'c' and CONSOLE == true then
-    CONSOLE = false
-  elseif key == 'c' and CONSOLE == false then
-    CONSOLE = true
-  end 
 end
 
--- On update passing delta time (seconds since the last frame)
-function love.update(dt)
+
+-- Old love.update handler. It was refactored so it can be called from multiple modules
+function loveUpdate(dt)
   -- Player 1 movement
   if love.keyboard.isDown('s') then
     player1Paddle:moveDown(dt)
-    if BALL_POSSESION == 'player1' then
-    ball.dy = ball.dy + 3
-    end
   end
 
   if love.keyboard.isDown('w') then
     player1Paddle:moveUp(dt)
-    if BALL_POSSESION == 'player1' then
-    ball.dy = ball.dy - 3
-    end
   end
 
   if player1Joystick then
@@ -144,30 +134,15 @@ function love.update(dt)
   -- Player 2 movement
   if love.keyboard.isDown('down') then
     player2Paddle:moveDown(dt)
-    if BALL_POSSESION == 'player2' then
-    ball.dy = ball.dy + 3
-    end
   end
 
   if love.keyboard.isDown('up') then
     player2Paddle:moveUp(dt)
-    if BALL_POSSESION == 'player2' then
-    ball.dy = ball.dy - 3
-    end
   end
 
   if gameState == 'play' then
     ball:move(dt)
-
-  -- Handle ball possesion
-  if BALL_POSSESION == 'player1' and 
-    ball.x > VIRTUAL_WIDTH / 2 then
-    BALL_POSSESION = 'neutral'
-  elseif BALL_POSSESION == 'player2' and 
-    ball.x < VIRTUAL_WIDTH / 2 then
-    BALL_POSSESION = 'neutral'
-  end
-  
+ 
     -- Handle paddle collision
     if ball:isColliding(player1Paddle) then
       ball:bounce()
@@ -212,6 +187,13 @@ function love.update(dt)
       sound.score:play()
     end
   end
+end
+
+-- On update passing delta time (seconds since the last frame)
+function love.update(dt)
+  loveUpdate(dt)
+  Ball:ballPossesion()
+  Ball:rotate(dt)
 end
 
 -- Render FPS counter
@@ -262,27 +244,6 @@ function renderFieldOutline()
   dottedLine(0.5 * VIRTUAL_WIDTH, BOARD_BORDER_TOP, 0.5 * VIRTUAL_WIDTH, VIRTUAL_HEIGHT, 5, 3)
 end
 
-function logBallOwnership()
-  love.graphics.setColor(getColor('red'))
-  love.graphics.printf('Ball ownership: ' ..BALL_POSSESION, 10, BORDER_LEFT_RIGHT + 10, 300)
-end
-
-function logballPosition()
-  love.graphics.setColor(getColor('white'))
-  love.graphics.printf('Ball position X: ' ..ball.x, 10, BORDER_LEFT_RIGHT + 20, 300)
-  love.graphics.printf('Ball position Y: ' ..ball.y, 10, BORDER_LEFT_RIGHT + 30, 300)
-  love.graphics.printf('Ball delta X: ' ..ball.dx, 10, BORDER_LEFT_RIGHT + 40, 300)
-  love.graphics.printf('Ball delta Y: ' ..ball.dy, 10, BORDER_LEFT_RIGHT + 50, 300)
-end
-
--- CONSOLE log
-function renderConsole()
-  if CONSOLE == true then
-  logBallOwnership()
-  logballPosition()
-  end
-end
-
 function renderMatch()
   -- Draw game score
   renderScore()
@@ -319,7 +280,7 @@ function love.draw()
   renderWelcomeScreen()
 
   -- Render console with logs
-  renderConsole()
+  Console:renderConsole()
 
   push:finish()
 end

@@ -5,6 +5,45 @@ BALL_HEIGHT = 4
 
 BALL_POSSESION = 'neutral'
 
+-- Handle ball possesion
+function Ball:ballPossesion()
+  if BALL_POSSESION == 'player1' and ball.x > VIRTUAL_WIDTH / 2 then
+    BALL_POSSESION = 'neutral'
+  elseif BALL_POSSESION == 'player2' and ball.x < VIRTUAL_WIDTH / 2 then
+    BALL_POSSESION = 'neutral'
+  end
+end
+
+-- Ball rotation method
+-- I need to refactor this code so the rotation is universal. It should depend on paddle movement itself, not on key pressing
+function Ball:rotate(dt)
+  -- Player 1 movement rotation
+  if love.keyboard.isDown('s') then
+    if BALL_POSSESION == 'player1' then
+    ball.dy = ball.dy + 3
+    end
+  end
+
+  if love.keyboard.isDown('w') then
+    if BALL_POSSESION == 'player1' then
+    ball.dy = ball.dy - 3
+    end
+  end
+
+  -- Player 1 movement rotation
+  if love.keyboard.isDown('down') then
+    if BALL_POSSESION == 'player2' then
+    ball.dy = ball.dy + 3
+    end
+  end
+
+  if love.keyboard.isDown('up') then
+    if BALL_POSSESION == 'player2' then
+    ball.dy = ball.dy - 3
+    end
+  end
+end
+
 function Ball:init(x, y)
   -- Ball position
   self.x = x
