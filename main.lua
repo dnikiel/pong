@@ -115,10 +115,16 @@ function loveUpdate(dt)
   -- Player 1 movement
   if love.keyboard.isDown('s') then
     player1Paddle:moveDown(dt)
+    if BALL_POSSESION == 'player1' then
+      ball:rotate('down')
+    end
   end
 
   if love.keyboard.isDown('w') then
     player1Paddle:moveUp(dt)
+    if BALL_POSSESION == 'player1' then
+    ball:rotate('up')
+    end
   end
 
   if player1Joystick then
@@ -134,10 +140,16 @@ function loveUpdate(dt)
   -- Player 2 movement
   if love.keyboard.isDown('down') then
     player2Paddle:moveDown(dt)
+    if BALL_POSSESION == 'player2' then
+      ball:rotate('down')
+    end
   end
 
   if love.keyboard.isDown('up') then
     player2Paddle:moveUp(dt)
+    if BALL_POSSESION == 'player2' then
+      ball:rotate('up')
+    end
   end
 
   if gameState == 'play' then
@@ -193,7 +205,6 @@ end
 function love.update(dt)
   loveUpdate(dt)
   Ball:ballPossesion()
-  Ball:rotate(dt)
 end
 
 -- Render FPS counter

@@ -15,32 +15,12 @@ function Ball:ballPossesion()
 end
 
 -- Ball rotation method
--- I need to refactor this code so the rotation is universal. It should depend on paddle movement itself, not on key pressing
-function Ball:rotate(dt)
-  -- Player 1 movement rotation
-  if love.keyboard.isDown('s') then
-    if BALL_POSSESION == 'player1' then
-    ball.dy = ball.dy + 3
-    end
-  end
-
-  if love.keyboard.isDown('w') then
-    if BALL_POSSESION == 'player1' then
-    ball.dy = ball.dy - 3
-    end
-  end
-
-  -- Player 1 movement rotation
-  if love.keyboard.isDown('down') then
-    if BALL_POSSESION == 'player2' then
-    ball.dy = ball.dy + 3
-    end
-  end
-
-  if love.keyboard.isDown('up') then
-    if BALL_POSSESION == 'player2' then
-    ball.dy = ball.dy - 3
-    end
+function Ball:rotate(direction)
+ROTATION_FACTOR = 3
+  if direction == 'down' then
+    self.dy = self.dy + ROTATION_FACTOR
+  elseif direction == 'up' then
+    self.dy = self.dy - ROTATION_FACTOR
   end
 end
 

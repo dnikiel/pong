@@ -1,12 +1,12 @@
 Console = Class{}
 
-CONSOLE = false
+SHOW_CONSOLE = false
 
 function Console:consoleDisplay(key)
-  if key == 'c' and CONSOLE == true then
-    CONSOLE = false
-  elseif key == 'c' and CONSOLE == false then
-    CONSOLE = true
+  if key == 'c' and SHOW_CONSOLE == true then
+    SHOW_CONSOLE = false
+  elseif key == 'c' and SHOW_CONSOLE == false then
+    SHOW_CONSOLE = true
   end
 end
 
@@ -23,9 +23,9 @@ function Console:logBallPosition()
   love.graphics.printf('Ball delta Y: ' ..ball.dy, 10, BORDER_LEFT_RIGHT + 50, 300)
 end
   
--- CONSOLE log
+-- Console logging
 function Console:renderConsole()
-  if CONSOLE == true then
+  if SHOW_CONSOLE == true then
   Console:logBallOwnership()
   Console:logBallPosition()
   end
