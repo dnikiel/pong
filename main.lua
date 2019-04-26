@@ -38,6 +38,62 @@ function love.load()
 
   love.graphics.setDefaultFilter('nearest', 'nearest')
 
+  -- Load and set graphics
+  tileset = love.graphics.newImage('images/dungeon.png')
+
+  tileW, tileH = 16, 16
+  tilesetW, tilesetH = tileset:getWidth(), tileset:getHeight()
+
+  quad = {
+    -- floor 1-8
+    love.graphics.newQuad(16, 64, tileW, tileH, tilesetW, tilesetH),
+    love.graphics.newQuad(32, 64, tileW, tileH, tilesetW, tilesetH),
+    love.graphics.newQuad(48, 64, tileW, tileH, tilesetW, tilesetH),
+    love.graphics.newQuad(16, 80, tileW, tileH, tilesetW, tilesetH),
+    love.graphics.newQuad(32, 80, tileW, tileH, tilesetW, tilesetH),
+    love.graphics.newQuad(48, 80, tileW, tileH, tilesetW, tilesetH),
+    love.graphics.newQuad(16, 96, tileW, tileH, tilesetW, tilesetH),
+    love.graphics.newQuad(32, 96, tileW, tileH, tilesetW, tilesetH),
+
+    -- walls 9-18
+    love.graphics.newQuad(16, 0, tileW, tileH, tilesetW, tilesetH),
+    love.graphics.newQuad(32, 0, tileW, tileH, tilesetW, tilesetH),
+    love.graphics.newQuad(48, 0, tileW, tileH, tilesetW, tilesetH),
+    love.graphics.newQuad(16, 16, tileW, tileH, tilesetW, tilesetH),
+    love.graphics.newQuad(32, 16, tileW, tileH, tilesetW, tilesetH),
+    love.graphics.newQuad(48, 16, tileW, tileH, tilesetW, tilesetH),
+
+    love.graphics.newQuad(32, 160, tileW, tileH, tilesetW, tilesetH),
+    love.graphics.newQuad(48, 160, tileW, tileH, tilesetW, tilesetH),
+    love.graphics.newQuad(64, 160, tileW, tileH, tilesetW, tilesetH),
+    love.graphics.newQuad(80, 160, tileW, tileH, tilesetW, tilesetH),
+  }
+
+  tileTable = {
+    {9,10,11,9,10,11,9,10,11,9,10,11,9,10,11,9,10,11,9,10,11,9,10,11,9,10,11},
+    {12,13,14,12,13,14,12,13,14,12,13,14,12,13,14,12,13,14,12,13,14,12,13,14,12,13,14},
+    {1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,4,1,1,1,1,1},
+    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+    {1,1,1,1,1,1,1,1,3,1,1,1,2,1,1,1,3,1,1,1,1,1,1,6,1,1,1},
+    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+    {1,1,1,1,1,1,1,1,4,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,5,1,1,1,1,1,1,1,1,1,1,1},
+    {1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,1,1,1,1},
+    {9,10,11,9,10,11,9,10,11,9,10,11,9,10,11,9,10,11,9,10,11,9,10,11,9,10,11},
+    {12,13,14,12,13,14,12,13,14,12,13,14,12,13,14,12,13,14,12,13,14,12,13,14,12,13,14},
+  }
+
+  -- wall_corner_top_left 32 112 16 16
+  -- wall_corner_top_right 48 112 16 16
+  -- wall_corner_left 32 128 16 16
+  -- wall_corner_right 48 128 16 16
+  -- wall_corner_bottom_left 32 144 16 16
+  -- wall_corner_bottom_right 48 144 16 16
+  -- wall_corner_front_left 32 160 16 16
+  -- wall_corner_front_right 48 160 16 16
+
   -- More "retro-looking" font object
   retroFont = love.graphics.newFont('font.ttf', 8)
 
@@ -231,9 +287,26 @@ function renderFieldOutline()
   dottedLine(0.5 * VIRTUAL_WIDTH, BOARD_BORDER_TOP, 0.5 * VIRTUAL_WIDTH, VIRTUAL_HEIGHT, 5, 3)
 end
 
+function renderField()
+  for rowIndex=1, #tileTable do
+    local row = tileTable[rowIndex]
+    for columnIndex=1, #row do
+      local number = row[columnIndex]
+      love.graphics.draw(
+        tileset,
+        quad[number],
+        3 + (columnIndex - 1) * tileW,
+        BOARD_BORDER_TOP + 2 + (rowIndex - 1) * tileH
+      )
+    end
+  end
+end
+
 function renderMatch()
   -- Draw game score
   renderScore()
+
+  renderField()
 
   -- Draw outline
   renderFieldOutline()

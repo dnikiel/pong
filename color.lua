@@ -1,4 +1,4 @@
-COLOR = {
+local color = {
   red = {r = 230, g = 57, b = 70},
   skyBlue =  {r = 168, g = 218, b = 220},
   lightBlue = {r = 69, g = 123, b = 157},
@@ -6,9 +6,9 @@ COLOR = {
   white = {r = 241, g = 250, b = 238}
 }
 
-function getColor(color)
-  if (COLOR[color]) then
-    local currentColor = COLOR[color]
+function getColor(val)
+  if (color[val]) then
+    local currentColor = color[val]
 
     return {
       currentColor.r / 255,
