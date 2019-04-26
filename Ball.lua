@@ -1,28 +1,7 @@
-Ball = Class{}
+Ball = Class {}
 
 BALL_WIDTH = 4
 BALL_HEIGHT = 4
-
-BALL_POSSESION = 'neutral'
-
--- Handle ball possesion
-function Ball:ballPossesion()
-  if BALL_POSSESION == 'player1' and ball.x > VIRTUAL_WIDTH / 2 then
-    BALL_POSSESION = 'neutral'
-  elseif BALL_POSSESION == 'player2' and ball.x < VIRTUAL_WIDTH / 2 then
-    BALL_POSSESION = 'neutral'
-  end
-end
-
--- Ball rotation method
-function Ball:rotate(direction)
-ROTATION_FACTOR = 3
-  if direction == 'down' then
-    self.dy = self.dy + ROTATION_FACTOR
-  elseif direction == 'up' then
-    self.dy = self.dy - ROTATION_FACTOR
-  end
-end
 
 function Ball:init(x, y)
   -- Ball position
@@ -39,6 +18,26 @@ function Ball:init(x, y)
 
   -- Ball color
   self.color = getColor('skyBlue')
+
+  self.possession = 'neutral'
+end
+
+function Ball:setBallPossession()
+  if self.possession == 'player1' and self.x > VIRTUAL_WIDTH / 2 then
+    self.possession = 'neutral'
+  elseif self.possession == 'player2' and self.x < VIRTUAL_WIDTH / 2 then
+    self.possession = 'neutral'
+  end
+end
+
+function Ball:rotate(direction)
+  local rotationFactor = 3
+
+  if direction == 'down' then
+    self.dy = self.dy + rotationFactor
+  elseif direction == 'up' then
+    self.dy = self.dy - rotationFactor
+  end
 end
 
 function Ball:move(dt)
@@ -69,13 +68,13 @@ end
 function Ball:isColliding(paddle)
   -- AABB collision detection:
   -- https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection#Axis-Aligned_Bounding_Box
-  if self.x < paddle.x + paddle.width and
-    self.x + self.width > paddle.x and
-    self.y < paddle.y + paddle.height and
-    self.height + self.y > paddle.y then
-      return true
-    else
-      return false
+  if
+    self.x < paddle.x + paddle.width and self.x + self.width > paddle.x and self.y < paddle.y + paddle.height and
+      self.height + self.y > paddle.y
+   then
+    return true
+  else
+    return false
   end
 end
 

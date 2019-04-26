@@ -1,4 +1,4 @@
-Paddle = Class{}
+Paddle = Class {}
 
 PADDLE_WIDTH = 5
 PADDLE_HEIGHT = 20
