@@ -10,6 +10,7 @@ require 'color'
 
 require 'Paddle'
 require 'Ball'
+require 'Console'
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
@@ -58,11 +59,7 @@ function love.load()
   local ballY = VIRTUAL_HEIGHT / 2 - BALL_HEIGHT / 2
 
   player1Paddle = Paddle(BORDER_LEFT_RIGHT, player1Y, getColor('red'))
-  player2Paddle = Paddle(
-    VIRTUAL_WIDTH - BORDER_LEFT_RIGHT - PADDLE_WIDTH,
-    player2Y,
-    getColor('lightBlue')
-  )
+  player2Paddle = Paddle(VIRTUAL_WIDTH - BORDER_LEFT_RIGHT - PADDLE_WIDTH, player2Y, getColor('lightBlue'))
 
   ball = Ball(ballX, ballY)
 
@@ -75,11 +72,17 @@ function love.load()
 
   love.graphics.setFont(retroFont)
 
-  push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
-    fullscreen = false,
-    resizable = false,
-    vsync = true
-  })
+  push:setupScreen(
+    VIRTUAL_WIDTH,
+    VIRTUAL_HEIGHT,
+    WINDOW_WIDTH,
+    WINDOW_HEIGHT,
+    {
+      fullscreen = false,
+      resizable = false,
+      vsync = true
+    }
+  )
 
   -- Initialize joystick
   player1Joystick = nil
@@ -90,7 +93,10 @@ function love.joystickadded(joystick)
   player1Joystick = joystick
 end
 
+-- Key pressing handler
 function love.keypressed(key)
+  Console:display(key)
+
   if key == 'escape' then
     love.event.quit()
   end
@@ -100,7 +106,6 @@ function love.keypressed(key)
       gameState = GAME_STATE.play
     else
       gameState = GAME_STATE.start
-
       ball:reset()
     end
   end
@@ -108,21 +113,31 @@ end
 
 -- On update passing delta time (seconds since the last frame)
 function love.update(dt)
+  ball:setBallPossession()
+
   -- Player 1 movement
   if love.keyboard.isDown('s') then
     player1Paddle:moveDown(dt)
+
+    if ball.possession == 'player1' then
+      ball:rotate('down')
+    end
   end
 
   if love.keyboard.isDown('w') then
     player1Paddle:moveUp(dt)
+
+    if ball.possession == 'player1' then
+      ball:rotate('up')
+    end
   end
 
   if player1Joystick then
-    if player1Joystick:getGamepadAxis("lefty") > 0.5 then
+    if player1Joystick:getGamepadAxis('lefty') > 0.5 then
       player1Paddle:moveDown(dt)
     end
 
-    if player1Joystick:getGamepadAxis("lefty") < -0.5 then
+    if player1Joystick:getGamepadAxis('lefty') < -0.5 then
       player1Paddle:moveUp(dt)
     end
   end
@@ -130,10 +145,18 @@ function love.update(dt)
   -- Player 2 movement
   if love.keyboard.isDown('down') then
     player2Paddle:moveDown(dt)
+
+    if ball.possession == 'player2' then
+      ball:rotate('down')
+    end
   end
 
   if love.keyboard.isDown('up') then
     player2Paddle:moveUp(dt)
+
+    if ball.possession == 'player2' then
+      ball:rotate('up')
+    end
   end
 
   if gameState == 'play' then
@@ -143,11 +166,13 @@ function love.update(dt)
     if ball:isColliding(player1Paddle) then
       ball:bounce()
       sound.bounce:play()
+      ball.possession = 'player1'
     end
 
     if ball:isColliding(player2Paddle) then
       ball:bounce()
       sound.bounce:play()
+      ball.possession = 'player2'
     end
 
     -- Handle collision with top border
@@ -185,7 +210,7 @@ end
 
 -- Render FPS counter
 function renderFps()
-  love.graphics.print('FPS: '..tostring(love.timer.getFPS( )), BORDER_LEFT_RIGHT, 10)
+  love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), BORDER_LEFT_RIGHT, 10)
 end
 
 -- Render Welcome Screen
@@ -200,7 +225,7 @@ end
 function renderScore()
   love.graphics.setColor(getColor('white'))
   love.graphics.printf(
-    'Score: '..tostring(score.player1)..':'..tostring(score.player2),
+    'Score: ' .. tostring(score.player1) .. ':' .. tostring(score.player2),
     0,
     10,
     VIRTUAL_WIDTH - BORDER_LEFT_RIGHT,
@@ -265,6 +290,9 @@ function love.draw()
 
   -- Render Welcome Screen
   renderWelcomeScreen()
+
+  -- Render console with logs
+  Console:renderConsole()
 
   push:finish()
 end
